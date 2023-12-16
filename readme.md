@@ -9,3 +9,12 @@ python3 ~/.local/lib/python3.10/site-packages/paddleocr/tools/infer/predict_det.
 
 # v4 server
 python3 ~/.local/lib/python3.10/site-packages/paddleocr/tools/infer/predict_det.py --image_dir="./test.jpg" --det_model_dir="./paddle/ch_PP-OCRv4_det_server_infer"  --det_limit_type=max --det_limit_side_len=1436
+
+# test
+python3 ocr.py '{    "image_dir": "./imgs/3.png",    "drop_score": 0.3,    "det_model_dir": "./paddle/ch_PP-OCRv4_det_infer",    "rec_model_dir": "./paddle/ch_PP-OCRv4_rec_infer",    "det_limit_side_len": 2496, "det_db_box_thresh": 0.3,    "use_angle_cls": false }'
+
+# docker compose
+docker-compose up -d --build
+
+# docker test
+docker run -it -v imgs:/app/imgs ocr_test_ocr /bin/bash

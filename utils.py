@@ -1,10 +1,16 @@
 from pathlib import Path
+import cv2
+import os
+import json
+from paddleocr.tools.infer.predict_system import TextSystem
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 from typing import Union, Any, Tuple, List, Optional, Dict
 from PIL import Image, ImageDraw, ImageFont
 import math
 import numpy as np
+from const import default_config
+
 def draw_ocr_box_txt(image,
                      boxes,
                      txts,
@@ -86,3 +92,36 @@ def draw_ocr_results(image_fp: Union[str, Path, Image.Image], ocr_outs, font_pat
     plt.imshow(draw_img)
     plt.axis('off')  # Turn off axis numbers
     plt.show()
+
+class MyObject:
+    def __init__(self, dictionary):
+        for key in dictionary:
+            setattr(self, key, dictionary[key])
+
+def json_to_class_obj(args):
+    return MyObject(args)
+
+def start_ocr(params):
+    args = json_to_class_obj({
+        **default_config,
+        **params,
+    })
+
+    imgs = []
+    if os.path.isdir(args.image_dir):
+        for i in os.listdir(args.image_dir):
+            imgs.append(cv2.imread(os.path.join(args.image_dir, i)))
+    else:
+        imgs.append(cv2.imread(args.image_dir))
+
+    ps = TextSystem(args)
+    
+    res = []
+    for img in imgs:
+        dt_boxes, rec_res, _ = ps.__call__(img, args.use_angle_cls)
+
+        ocr_res = [[box.tolist(), res]
+                   for box, res in zip(dt_boxes, rec_res)]
+        
+        res.append(ocr_res)
+    return res
