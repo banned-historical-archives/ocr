@@ -9,4 +9,4 @@ from utils import draw_ocr_results, start_ocr
 
 with open(sys.argv[1]) as f:
   args = json.load(f)
-  print(start_ocr(args))
+  print(json.dumps(start_ocr(args)))
