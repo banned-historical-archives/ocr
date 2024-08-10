@@ -2,6 +2,7 @@ FROM python:3.10
 
 RUN pip install "paddlepaddle==2.5.2"
 RUN pip install "paddleocr==2.7.0.3"
+RUN pip install "onnxruntime==1.18.1"
 
 WORKDIR /app
 
